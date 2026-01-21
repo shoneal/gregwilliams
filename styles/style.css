@@ -10,7 +10,8 @@ h3,
 p,
 ul,
 li,
-a {
+a,
+figure {
   margin: 0;
   padding: 0;
 }
@@ -23,11 +24,16 @@ a {
   list-style: none;
 }
 
+a {
+  cursor: pointer;
+}
+
 img,
 picture,
 svg,
 video {
   display: block;
+  width: 100%;
   pointer-events: none;
 }
 
@@ -35,12 +41,12 @@ body {
   position: relative;
   min-height: 100vh;
   margin: 0;
-  border: 1px solid tomato;
   padding: 0;
   color: white;
   font-family: "DIN", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Helvetica Neue", sans-serif;
   font-weight: 500;
+  text-transform: uppercase;
   background-color: black;
 }
 
@@ -49,19 +55,14 @@ body {
   top: 0;
   z-index: 20;
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   row-gap: 30px;
   width: 100%;
   height: 50px;
-  border: 1px solid grey;
   padding-inline: 30px;
+  overflow: hidden;
   background: black;
-}
-
-.site-header a {
-  cursor: pointer;
 }
 
 .scroll-lock {
@@ -80,8 +81,6 @@ body {
 
 .menu-list {
   display: flex;
-  flex-wrap: wrap;
-  text-transform: uppercase;
 }
 
 .menu-list a {
@@ -89,16 +88,17 @@ body {
   color: #b3b3b3;
   font-size: 22px;
   line-height: 1.15;
+  white-space: nowrap;
 }
 
-.current a {
-  color: white;
+.current {
+  color: white !important;
+  pointer-events: none;
 }
 
 main {
   position: relative;
   margin-top: 50px;
-  border: 1px solid green;
 }
 
 .brand-name {
@@ -108,45 +108,34 @@ main {
   padding: 30px;
   font-size: 152px;
   line-height: 0.85;
-  text-transform: uppercase;
 }
 
-.introImage {
-  width: 100%;
+.introVideo {
   margin-top: -448px;
   object-fit: cover;
   aspect-ratio: 1/0.425;
 }
 
 .entry-header {
+  display: flex;
+  align-items: center;
+  height: 70px;
   padding-inline: max(calc((100% - 1600px) / 2 + 30px), 30px);
   color: black;
   background: white;
 }
 
 .entry-title {
-  display: flex;
-  align-items: center;
-  height: 70px;
+  display: inline-block;
   font-size: 2.5rem;
   line-height: 47px;
-  text-transform: uppercase;
 }
 
 .entry-content {
   max-width: 1600px;
   min-height: 90vh;
   margin: 0 auto;
-  border: 1px solid blue;
   background: #141414;
-}
-
-.block-columns {
-  max-width: min(calc(100% - 2 * 30px), 1240px);
-  margin-top: calc(0.66 * 30px);
-  margin-bottom: 40px;
-  margin-inline: auto;
-  border: 1px solid pink;
 }
 
 .block-image {
@@ -163,12 +152,159 @@ main {
   object-fit: contain;
 }
 
+.block-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2em;
+  max-width: min(calc(100% - 2 * 30px), 1240px);
+  margin-top: calc(0.66 * 30px);
+  margin-bottom: 40px;
+  margin-inline: auto;
+}
+
+.block-column {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.66 * 30px);
+}
+
+.special-block-columns-image {
+  background: black;
+  aspect-ratio: 1.5;
+}
+
+.special-block-columns-image a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.special-block-columns-image img {
+  width: 75%;
+}
+
+.block-columns-image {
+  position: relative;
+  cursor: pointer;
+}
+
+.block-columns-image a {
+  filter: brightness(0.7);
+}
+
+.block-columns-image:hover a {
+  filter: brightness(1);
+}
+
+.element-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin-top: calc(0.5 * 30px);
+  padding-bottom: calc(0.66 * 30px);
+  padding-left: calc(0.66 * 30px);
+  font-size: 55px;
+  line-height: 47px;
+}
+
+.wp-block-image {
+  cursor: pointer;
+}
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  display: none;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: black;
+}
+
+.popup_is-opened {
+  display: block;
+}
+
+.close {
+  position: absolute;
+  top: 7px;
+  right: 15px;
+  z-index: 1000;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.popup-content {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  height: 100%;
+  margin: auto;
+  padding: 0;
+}
+
+.slides {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.slides img {
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.arrows {
+  position: absolute;
+  bottom: 20px;
+  z-index: 1000;
+  display: block;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.arrows::before {
+  font-family: "revicons";
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 40px;
+}
+
+.prev {
+  transform: translate(30px, -25px);
+}
+
+.prev::before {
+  content: "\e824";
+}
+
+.next {
+  left: 100%;
+  transform: translate(-80px, -25px);
+}
+
+.next::before {
+  content: "\e825";
+}
+
+.non-active {
+  display: none;
+}
+
 @media screen and (max-width: 1350px) {
   .brand-name {
     font-size: 55px;
   }
 
-  .introImage {
+  .introVideo {
     margin-top: -204px;
   }
 }
@@ -197,10 +333,25 @@ main {
   .entry-title {
     font-size: 28px;
   }
+
+  .block-columns {
+    display: flex;
+    flex-direction: column;
+    gap: calc(0.66 * 30px);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .element-caption {
+    padding-bottom: 10px;
+    padding-left: 10px;
+    font-size: 32px;
+    line-height: 28px;
+  }
 }
 
 @media screen and (max-width: 482px) {
-  .introImage {
+  .introVideo {
     margin-top: 0;
   }
 }

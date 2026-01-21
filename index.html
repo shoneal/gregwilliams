@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="eng">
   <head>
     <meta charset="UTF-8" />
@@ -45,7 +45,7 @@
       <a class="site-title">GWP</a>
       <nav class="primary-navigation">
         <ul class="menu-list">
-          <li class="menu-item current">
+          <li class="menu-item">
             <a>Photography</a>
           </li>
           <li class="menu-item">
@@ -55,30 +55,48 @@
       </nav>
     </header>
     <main>
-      <div class="intro">
-        <h1 class="brand-name">Greg Williams Photography</h1>
-        <img
-          class="introImage"
-          src="https://www.gregwilliams.com/wp-content/uploads/2023/06/ana-de-armas-blonde-stories-gwp-13.jpg"
-          alt=""
-        />
-      </div>
       <article class="entry">
-        <header class="entry-header">
-          <h1 class="entry-title">PHOTOGRAPHY</h1>
-        </header>
         <div class="entry-content">
-          <figure class="block-image">
-            <img
-              src="https://hollywoodauthentic.com/wp-content/uploads/2023/11/hollywood-authentic-magazine-4.jpg"
-              alt=""
-              loading="lazy"
-            />
-          </figure>
           <div class="block-columns"></div>
         </div>
       </article>
     </main>
+    <div class="popup">
+      <p class="close">close</p>
+      <div class="popup-content">
+        <div class="slides"></div>
+        <a class="prev arrows"></a>
+        <a class="next arrows"></a>
+      </div>
+    </div>
+    <template id="intro-template">
+      <div class="intro">
+        <h1 class="brand-name"></h1>
+        <video class="introVideo" autoplay playsinline muted loop>
+          <source src="" type="video/mp4" />
+        </video>
+      </div>
+    </template>
+    <template id="entry-template">
+      <header class="entry-header">
+        <h1 class="entry-title">
+          <a></a>
+        </h1>
+      </header>
+    </template>
+    <template id="entry-content-template">
+      <figure class="block-image">
+        <img src="" alt="" loading="lazy" />
+      </figure>
+    </template>
+    <template id="block-columns-template">
+      <figure class="block-columns-image">
+        <a>
+          <img src="" alt="" />
+        </a>
+        <figcaption class="element-caption"></figcaption>
+      </figure>
+    </template>
 
     <script src="./scripts/script.js"></script>
   </body>
