@@ -4,3 +4,9 @@
   font-weight: 500;
   font-display: swap;
 }
+
+@font-face {
+  font-family: 'revicons';
+  src: url(./revicons.woff2) format("woff2");
+  font-display: swap;
+}
