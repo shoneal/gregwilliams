@@ -256,7 +256,7 @@ function insertBlockImages(dataName, currentLinkText, isHollywood) {
 
   const indices = shuffleArray(Array.from({ length: count }, (_, i) => i + 1));
 
-  const basePath = camelCase(currentLinkText);
+  const basePath = url(currentLinkText);
   slidesData.length = 0;
 
   const totalItems = indices.length;
