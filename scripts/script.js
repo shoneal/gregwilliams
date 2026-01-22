@@ -92,7 +92,7 @@ const sizes = [
   { path: "full", width: 2000 },
 ]; // Константы размеров изображений
 const watchImageForHeight = (img) => {
-  if (img && img.complete) {
+  if (img && img.complete && img.naturalWidth) {
     updateResponsiveHeight(img);
     return;
   }
@@ -156,7 +156,7 @@ function handleClick(target) {
     document.querySelector(".brand-name").textContent =
       "Greg Williams Photography";
     document.querySelector(".introVideo source").src =
-      `${basicLink}/video/into.mp4`;
+      `${basicLink}/video/intro.mp4`;
 
     populateBlockColumns(photography, elements.photographyLink.textContent);
   } else {
