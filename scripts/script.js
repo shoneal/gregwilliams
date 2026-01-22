@@ -231,9 +231,7 @@ function createColumnFragment(items, target, isFirstColumn) {
     )}/thumb/${randomNum}.jpg`;
     setupImageWithContainer(img, figure);
     watchImageForHeight(img);
-    window.addEventListener("resize", () => {
-      updateResponsiveHeight(img);
-    });
+    window.addEventListener("resize", () => updateResponsiveHeight(img));
 
     caption.innerHTML = key
       .replace(
@@ -338,9 +336,7 @@ function createOptimizedColumnFragment(indices, dataName, basePath) {
     img.loading = "lazy";
     setupImageWithContainer(img);
     watchImageForHeight(img);
-    window.addEventListener("resize", () => {
-      updateResponsiveHeight(img);
-    });
+    window.addEventListener("resize", () => updateResponsiveHeight(img));
 
     slidesData[globalIndex] = {
       src: `${baseImagePath}/full/${index}.jpg`,
