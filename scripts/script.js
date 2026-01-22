@@ -1,11 +1,11 @@
 const photography = {
   "Ana De Armas - Blonde": 7,
-  Boat: 25,
+  Boat: 26,
   Gongs: 100,
   "No Time to Die": 11,
-  Partae: 26,
-  Photography: 207,
-};
+  Partae: 27,
+  Photography: 205,
+}; // С сайта gregwilliams.com
 
 const hollywoodAuthentic = {
   "Austin Butler": 19,
@@ -20,27 +20,12 @@ const hollywoodAuthentic = {
   "Simon Pegg": 12,
   "The Smashing Machine": 11,
   Wolfs: 10,
-  "Zoe Saldana": 14,
+  "Zoe Saldana": 13,
   Photography: 131,
-  Magazines: 7,
-};
+}; // С сайта hollywoodauthentic.com
 
+const magazines = 7; // Количество обложек Hollywood Authentic
 const basicLink = "https://shoneal.github.io/gregwilliams/"; // Главная ссылка
-
-const setupImageWithContainer = (img, container = null) => {
-  const onLoadOrError = () => {
-    (container || img).style.opacity = "1";
-    img.removeEventListener("load", onLoadOrError);
-    img.removeEventListener("error", onLoadOrError);
-  };
-
-  (img.complete
-    ? onLoadOrError
-    : () => {
-        img.addEventListener("load", onLoadOrError);
-        img.addEventListener("error", onLoadOrError);
-      })();
-}; // Функция для настройки прозрачности изображения
 
 let currentSlideIndex = 0;
 let slidesData = [];
@@ -77,27 +62,69 @@ function url(text) {
     .replace(/[\s-]+/g, "-")
     .replace(/^-|-$/g, "");
 } // Форматирование названия в URL‑формат - "hollywood-authentic"
-
 function camelCase(text) {
-  const words = text.trim().split(/\s+/);
-  let result = words[0].toLowerCase();
-
-  for (let i = 1; i < words.length; i++) {
-    const word = words[i];
-    if (word) {
-      result += word[0].toUpperCase() + word.slice(1);
-    }
-  }
-
-  return result;
+  return text
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word)
+    .map((word, index) =>
+      index === 0
+        ? word.toLowerCase()
+        : word[0].toUpperCase() + word.slice(1).toLowerCase(),
+    )
+    .join("");
 } // Форматирование названия в camelCase формат - "hollywoodAuthentic"
 
+const setupImageWithContainer = (img, container = null) => {
+  const onLoadOrError = () => {
+    (container || img).style.opacity = "1";
+  };
+
+  if (img.complete) {
+    onLoadOrError();
+  } else {
+    img.addEventListener("load", onLoadOrError, { once: true });
+    img.addEventListener("error", onLoadOrError, { once: true });
+  }
+}; // Функция для настройки прозрачности изображения
+const sizes = [
+  { path: "thumb", width: 768 },
+  { path: "full", width: 2000 },
+]; // Константы размеров изображений
+const watchImageForHeight = (img) => {
+  if (img && img.complete) {
+    updateResponsiveHeight(img);
+    return;
+  }
+  img.addEventListener("load", () => updateResponsiveHeight(img), {
+    once: true,
+  });
+}; // Устанавливаем max‑height изображениям
+const updateResponsiveHeight = (img) => {
+  img.style.maxHeight = img.offsetWidth * 1.1 + "px";
+}; // Установка max‑height для resize
+
+function isHollywood(value) {
+  return value === "hollywoodAuthentic";
+} // Проверка на нужный массив
 function clearContent() {
   document
     .querySelectorAll(".intro, .entry-header, .block-image")
     .forEach((el) => el.remove());
   elements.blockColumns.innerHTML = "";
 } // Функция очистки контента
+const insertBlock = (template, container) =>
+  container.insertBefore(
+    template.content.cloneNode(true),
+    container.firstElementChild,
+  ); // Вставка базовых темплейтов
+function createColumnFromFragment(fragment) {
+  const column = document.createElement("div");
+  column.className = "block-column";
+  column.appendChild(fragment);
+  return column;
+} // Создание колонки из фрагмента
+
 function updateCurrentClasses(target) {
   const isHollywood = target === elements.hollywoodLink;
 
@@ -107,64 +134,120 @@ function updateCurrentClasses(target) {
     "current",
   );
 } // Функция обновления классов current
-const insertBlock = (template, container) =>
-  container.insertBefore(
-    template.content.cloneNode(true),
-    container.firstElementChild,
-  ); // Вставка базовых темплейтов
+function setupNavigationHandlers() {
+  const handlers = [
+    elements.mainLink,
+    elements.photographyLink,
+    elements.hollywoodLink,
+  ];
 
-function populateBlockColumns(data, isHollywood = false) {
-  const items = [];
-  for (const [key, value] of Object.entries(data)) {
-    if (!(isHollywood && key === "Magazines")) {
-      items.push({ key, value });
-    }
+  handlers.forEach((element) => {
+    element.addEventListener("click", () => handleClick(element));
+  });
+} // Нажатия на кнопки навигации
+function handleClick(target) {
+  clearContent();
+  updateCurrentClasses(target);
+  window.scrollTo(0, 0);
+
+  if (!isHollywood(camelCase(target.textContent))) {
+    insertBlock(elements.introTemplate, elements.main);
+
+    document.querySelector(".brand-name").textContent =
+      "Greg Williams Photography";
+    document.querySelector(".introVideo source").src =
+      `${basicLink}/video/into.mp4`;
+
+    populateBlockColumns(photography, elements.photographyLink.textContent);
+  } else {
+    insertBlock(elements.entryContentTemplate, elements.entryContent);
+
+    const randomMagazineNum = Math.floor(Math.random() * magazines) + 1;
+
+    const basePath = `${basicLink}/images/${url(target.textContent)}/magazine`;
+
+    const img = document.querySelector(".block-image img");
+    img.style.opacity = "0";
+    img.src = `${basicLink}/images/${url(
+      target.textContent,
+    )}/magazine/full/${randomMagazineNum}.jpg`;
+    img.srcset = sizes
+      .map((s) => `${basePath}/${s.path}/${randomMagazineNum}.jpg ${s.width}w`)
+      .join(", ");
+    img.sizes = "100vw";
+    img.alt = target.textContent;
+    setupImageWithContainer(img);
+
+    populateBlockColumns(hollywoodAuthentic, target.textContent);
   }
+} // Сама функция нажатия на кнопки навигации
 
-  const totalItems = items.length;
-  const splitIndex = isHollywood
-    ? Math.floor(totalItems / 2)
-    : Math.ceil(totalItems / 2);
+function populateBlockColumns(data, target) {
+  const items = Object.entries(data).map(([key, value]) => ({ key, value }));
+
+  const splitIndex = isHollywood(url(target))
+    ? Math.floor(items.length / 2)
+    : Math.ceil(items.length / 2);
 
   const column1 = createColumnFragment(
     items.slice(0, splitIndex),
-    isHollywood,
-    isHollywood,
+    target,
+    true,
   );
-  const column2 = createColumnFragment(
-    items.slice(splitIndex),
-    isHollywood,
-    false,
-  );
+  const column2 = createColumnFragment(items.slice(splitIndex), target, false);
 
   elements.blockColumns.replaceChildren(column1, column2);
 
-  elements.blockColumns.addEventListener("click", (event) => {
-    const figure = event.target.closest(".block-columns-image");
-    if (figure) handleBlockColumnsClick(event);
-  });
-}
-
-function createColumnFragment(items, isHollywood, addLogo = false) {
+  if (!elements.blockColumns._clickHandler) {
+    const handler = (event) => {
+      const figure = event.target.closest(".block-columns-image");
+      if (figure) handleBlockColumnsClick(event, url(target));
+    };
+    elements.blockColumns.addEventListener("click", handler);
+    elements.blockColumns._clickHandler = handler;
+  }
+} // Разбиение блока на колонки
+function createColumnFragment(items, target, isFirstColumn) {
   const fragment = document.createDocumentFragment();
-  const basePath = isHollywood
-    ? url(elements.hollywoodLink.textContent)
-    : url(elements.photographyLink.textContent);
 
-  if (isHollywood && addLogo) {
+  if (isFirstColumn && isHollywood(camelCase(target))) {
     fragment.appendChild(createLogoFigure());
   }
 
-  for (const { key, value } of items) {
-    const figure = createOptimizedItemFigure(key, value, basePath, isHollywood);
+  for (let i = 0; i < items.length; i++) {
+    const { key, value } = items[i];
+    const clone = elements.blockColumnsTemplate.content.cloneNode(true);
+    const figure = clone.querySelector(".block-columns-image");
+    const link = figure.querySelector("a");
+    const img = figure.querySelector("img");
+    const caption = figure.querySelector(".element-caption");
+
+    const randomNum = Math.floor(Math.random() * value) + 1;
+    figure.style.opacity = "0";
+    link.dataset.name = key;
+    img.alt = key;
+    img.src = `${basicLink}/images/${url(target)}/${url(
+      key,
+    )}/thumb/${randomNum}.jpg`;
+    setupImageWithContainer(img, figure);
+    watchImageForHeight(img);
+    window.addEventListener("resize", () => {
+      updateResponsiveHeight(img);
+    });
+
+    caption.innerHTML = key
+      .replace(
+        /(\s+)(-|–|—|‐)(\s+|$)/g,
+        (_, __, dash, spaceAfter) => `&nbsp;${dash}${spaceAfter || ""}`,
+      )
+      .split(" ")
+      .join("<br>");
+
     fragment.appendChild(figure);
   }
 
-  const column = document.createElement("div");
-  column.className = "block-column";
-  column.appendChild(fragment);
-  return column;
-}
+  return createColumnFromFragment(fragment);
+} // Создание фрагмента колонки
 function createLogoFigure() {
   const figure = document.createElement("figure");
   figure.className = "special-block-columns-image";
@@ -181,110 +264,68 @@ function createLogoFigure() {
   link.appendChild(img);
   figure.appendChild(link);
   return figure;
-}
-function createOptimizedItemFigure(key, value, basePath, isHollywood) {
-  const clone = elements.blockColumnsTemplate.content.cloneNode(true);
-  const figure = clone.querySelector(".block-columns-image");
-  const link = figure.querySelector("a");
-  const img = figure.querySelector("img");
-  const caption = figure.querySelector(".element-caption");
+} // Создание логотипа только для голливудского контента
 
-  figure.style.opacity = "0";
-  link.dataset.name = key;
-  img.alt = key;
-
-  caption.innerHTML = key
-    .replace(
-      /(\s+)(-|–|—|‐)(\s+|$)/g,
-      (_, __, dash, spaceAfter) => `&nbsp;${dash}${spaceAfter || ""}`,
-    )
-    .split(" ")
-    .join("<br>");
-
-  const maxImages = isHollywood ? hollywoodAuthentic.Magazines : value;
-  const randomNum = Math.floor(Math.random() * maxImages) + 1;
-  img.src = `${basicLink}/images/${basePath}/${url(
-    key,
-  )}/thumb/${randomNum}.jpg`;
-
-  setupImageWithContainer(img, figure);
-  return figure;
-}
-
-function handleBlockColumnsClick(event) {
+function handleBlockColumnsClick(event, target) {
   clearContent();
+  elements.mainLink.classList.remove("current");
   insertBlock(elements.entryTemplate, elements.entry);
+  window.scrollTo(0, 0);
 
-  const isHollywood = elements.hollywoodLink.classList.contains("current");
-  const currentLinkText = isHollywood
-    ? elements.hollywoodLink.textContent
-    : elements.photographyLink.textContent;
-
+  const currentLink = document.querySelector(".menu-list .current");
   const clickedData =
     event.target.closest(".block-columns-image")?.querySelector("a")?.dataset
       .name || "";
-
   const entryTitle = document.querySelector(".entry-title");
   const linkInTitle = entryTitle.querySelector("a");
 
-  while (entryTitle.firstChild) {
-    entryTitle.removeChild(entryTitle.firstChild);
-  }
-  linkInTitle.textContent = currentLinkText;
+  entryTitle.textContent = "";
+  linkInTitle.textContent = currentLink.textContent;
   entryTitle.appendChild(linkInTitle);
-
-  if (currentLinkText !== clickedData) {
-    const separator = document.createTextNode(` > ${clickedData}`);
-    entryTitle.appendChild(separator);
+  if (currentLink.textContent !== clickedData) {
+    entryTitle.append(" > ", clickedData);
   }
-
   const newLink = linkInTitle.cloneNode(true);
-  newLink.addEventListener("click", () =>
-    handleClick(
-      isHollywood ? elements.hollywoodLink : elements.photographyLink,
-      isHollywood,
-    ),
-  );
+  newLink.addEventListener("click", () => handleClick(currentLink), {
+    once: true,
+  });
   linkInTitle.replaceWith(newLink);
 
-  insertBlockImages(clickedData, currentLinkText, isHollywood);
-}
+  const count = isHollywood(camelCase(currentLink.textContent))
+    ? hollywoodAuthentic[clickedData]
+    : photography[clickedData];
 
-function insertBlockImages(dataName, currentLinkText, isHollywood) {
-  const dataObject = isHollywood ? hollywoodAuthentic : photography;
-  const count = dataObject[dataName] || 0;
-
-  const indices = shuffleArray(Array.from({ length: count }, (_, i) => i + 1));
-
-  const basePath = url(currentLinkText);
   slidesData.length = 0;
-
-  const totalItems = indices.length;
-  const firstColumnCount = Math.ceil(totalItems / 2);
+  const indices = Array.from({ length: count }, (_, i) => i + 1);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  const firstColumnCount = Math.ceil(indices.length / 2);
 
   const column1 = createOptimizedColumnFragment(
     indices.slice(0, firstColumnCount),
-    dataName,
-    basePath,
+    clickedData,
+    currentLink,
   );
   const column2 = createOptimizedColumnFragment(
     indices.slice(firstColumnCount),
-    dataName,
-    basePath,
+    clickedData,
+    currentLink,
   );
 
   elements.blockColumns.replaceChildren(column1, column2);
-}
-
+} // Клик по элементу изначальной колонки
 function createOptimizedColumnFragment(indices, dataName, basePath) {
   const fragment = document.createDocumentFragment();
   const startIndex = slidesData.length;
+  const baseImagePath = `${basicLink}/images/${url(basePath.textContent)}/${url(
+    dataName,
+  )}`;
 
   for (let i = 0; i < indices.length; i++) {
     const index = indices[i];
     const globalIndex = startIndex + i;
-
-    const baseImagePath = `${basicLink}/images/${basePath}/${url(dataName)}`;
 
     const figure = document.createElement("figure");
     figure.dataset.slideIndex = globalIndex;
@@ -296,13 +337,16 @@ function createOptimizedColumnFragment(indices, dataName, basePath) {
     img.alt = dataName;
     img.loading = "lazy";
     setupImageWithContainer(img);
+    watchImageForHeight(img);
+    window.addEventListener("resize", () => {
+      updateResponsiveHeight(img);
+    });
 
     slidesData[globalIndex] = {
       src: `${baseImagePath}/full/${index}.jpg`,
-      srcset: `
-      ${baseImagePath}/mobile/${index}.jpg 768w,
-      ${baseImagePath}/full/${index}.jpg 2000w
-    `,
+      srcset: sizes
+        .map((s) => `${baseImagePath}/${s.path}/${index}.jpg ${s.width}w`)
+        .join(", "),
       alt: dataName,
       originalIndex: index,
     };
@@ -314,62 +358,8 @@ function createOptimizedColumnFragment(indices, dataName, basePath) {
     fragment.appendChild(figure);
   }
 
-  const column = document.createElement("div");
-  column.className = "block-column";
-  column.appendChild(fragment);
-  return column;
-}
-
-function shuffleArray(array) {
-  const newArray = [...array];
-  for (let i = newArray.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-  }
-  return newArray;
-}
-
-function handleClick(target, isHollywood) {
-  clearContent();
-  updateCurrentClasses(target);
-
-  if (!isHollywood) {
-    insertBlock(elements.introTemplate, elements.main);
-
-    document.querySelector(".brand-name").textContent =
-      "Greg Williams Photography";
-    document.querySelector(".introVideo source").src =
-      `${basicLink}/video/intro.mp4`;
-
-    populateBlockColumns(photography, false);
-  } else {
-    insertBlock(elements.entryContentTemplate, elements.entryContent);
-
-    const randomMagazineNum =
-      Math.floor(Math.random() * hollywoodAuthentic.Magazines) + 1;
-    const formattedName = url(elements.hollywoodLink.textContent);
-
-    const img = document.querySelector(".block-image img");
-    img.src = `${basicLink}/images/${formattedName}/magazine/full/${randomMagazineNum}.jpg`;
-    ((img.srcset = `
-      ${basicLink}/images/${formattedName}/magazine/thumb/${randomMagazineNum}.jpg 768w,
-      ${basicLink}/images/${formattedName}/magazine/full/${randomMagazineNum}.jpg 2000w
-    `),
-      (img.sizes = "100vw"));
-    img.alt = elements.hollywoodLink.textContent;
-
-    populateBlockColumns(hollywoodAuthentic, true);
-  }
-}
-
-function openGalleryPopupForColumn(startIndex) {
-  currentSlideIndex = startIndex;
-  openPopup(elements.popup);
-  addCloseOverlayListener(elements.popup);
-  showSlide(currentSlideIndex);
-  updateNavigationButtons();
-}
-// Показать конкретный слайд
+  return createColumnFromFragment(fragment);
+} // Создание фрагмента углубленной колонки
 function showSlide(index) {
   if (!slidesData || !slidesData[index]) return; // Защита от ошибок
 
@@ -387,114 +377,92 @@ function showSlide(index) {
   elements.slidesContainer.appendChild(slide);
 
   updateNavigationButtons();
+} // Создание изображения в попапе
+function openGalleryPopupForColumn(index) {
+  currentSlideIndex = index;
+  openPopup(elements.popup);
+  addCloseOverlayListener(elements.popup);
+  showSlide(currentSlideIndex);
 }
+// Открытие конкретного попапа
 
-function updateNavigationButtons() {
-  // Скрываем/показываем кнопку "Prev"
-  if (currentSlideIndex === 0) {
-    elements.prevButton.classList.add("non-active");
-  } else {
-    elements.prevButton.classList.remove("non-active");
-  }
-
-  // Скрываем/показываем кнопку "Next"
-  if (currentSlideIndex === slidesData.length - 1) {
-    elements.nextButton.classList.add("non-active");
-  } else {
-    elements.nextButton.classList.remove("non-active");
-  }
-}
-
-// Следующий слайд
-function nextSlide() {
-  if (currentSlideIndex < slidesData.length - 1) {
-    currentSlideIndex++;
-    showSlide(currentSlideIndex);
-  }
-}
-
-// Предыдущий слайд
-function prevSlide() {
-  if (currentSlideIndex > 0) {
-    currentSlideIndex--;
-    showSlide(currentSlideIndex);
-  }
-}
-
-function handleKeyPress(e) {
-  if (!elements.popup.classList.contains("popup_is-opened")) return; // Работаем только если попап открыт
-
-  switch (e.key) {
-    case "ArrowLeft":
-      prevSlide();
-      break;
-    case "ArrowRight":
-      nextSlide();
-      break;
-    case "Escape":
-      closePopup(popup);
-      break;
-  }
-}
-
-function setupNavigationHandlers() {
-  const handlers = [
-    [elements.mainLink, false],
-    [elements.photographyLink, false],
-    [elements.hollywoodLink, true],
-  ];
-
-  handlers.forEach(([element, isHollywood]) => {
-    element.addEventListener("click", () => handleClick(element, isHollywood));
-  });
-}
-
-function setupPopupHandlers() {
-  elements.closeButton.addEventListener("click", () =>
-    closePopup(elements.popup),
-  );
-  elements.prevButton.addEventListener("click", prevSlide);
-  elements.nextButton.addEventListener("click", nextSlide);
-  document.addEventListener("keydown", handleKeyPress);
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  setupNavigationHandlers();
-  setupPopupHandlers();
-  handleClick(elements.mainLink, false);
-});
-
-const openPopup = (popup) => {
+function openPopup(popup) {
   const body = document.body;
   const scrollPosition = window.scrollY;
+
   body.dataset.scrollPosition = scrollPosition;
   body.style.top = `-${scrollPosition}px`;
   body.classList.add("scroll-lock");
   popup.classList.add("popup_is-opened");
-  document.addEventListener("keydown", closePopupByEsc);
-}; // Открытие popup
-const closePopup = (popup) => {
+
+  updateNavigationButtons();
+  setupPopupHandlers();
+  document.addEventListener("keydown", handleKeyPress);
+} // Открытие popup
+function closePopup(popup) {
   const body = document.body;
   const scrollPosition = body.dataset.scrollPosition;
   body.style.top = "";
   body.classList.remove("scroll-lock");
   window.scrollTo(0, scrollPosition);
   popup.classList.remove("popup_is-opened");
+
   popup.querySelectorAll("img").forEach((img) => {
     img.remove();
   });
-  document.removeEventListener("keydown", closePopupByEsc);
-}; // Закрытие popup
-const closePopupByEsc = (e) =>
-  e.key === "Escape" && closePopup(document.querySelector(".popup_is-opened")); // Закрытие popup по Esc
-function addCloseOverlayListener(element) {
-  element.addEventListener("click", function (e) {
-    const isOnArrows = e.target.closest(".arrows");
-    const isOnClose = e.target.closest(".close");
 
-    if (!isOnArrows && !isOnClose) {
-      // Если клик был не на стрелках и не на кнопке закрытия, закрываем попап
-      closePopup(e.currentTarget);
+  document.removeEventListener("keydown", handleKeyPress);
+} // Закрытие popup
+function addCloseOverlayListener(element) {
+  element.addEventListener("click", (e) => {
+    if (!e.target.closest(".arrows, .close")) {
+      closePopup(elements.popup);
     }
   });
-}
+} // Закрытие попапа при нажатии куда угодно кроме кнопок навигации
+function nextSlide() {
+  if (currentSlideIndex < slidesData.length - 1) {
+    currentSlideIndex++;
+    showSlide(currentSlideIndex);
+  }
+} // Следующий слайд
+function prevSlide() {
+  if (currentSlideIndex > 0) {
+    currentSlideIndex--;
+    showSlide(currentSlideIndex);
+  }
+} // Предыдущий слайд
+function updateNavigationButtons() {
+  elements.prevButton.classList.toggle("non-active", currentSlideIndex === 0);
+  elements.nextButton.classList.toggle(
+    "non-active",
+    currentSlideIndex === slidesData.length - 1,
+  );
+} // Активная ли кнопка перелистывания слайдов
+function handleKeyPress(e) {
+  if (!elements.popup.classList.contains("popup_is-opened")) return;
+
+  switch (e.key) {
+    case "Escape":
+      closePopup(elements.popup);
+      break;
+    case "ArrowLeft":
+      prevSlide();
+      break;
+    case "ArrowRight":
+      nextSlide();
+      break;
+  }
+} // Нажатия на клавиши
+function setupPopupHandlers() {
+  elements.closeButton.addEventListener("click", () =>
+    closePopup(elements.popup),
+  );
+  elements.prevButton.addEventListener("click", prevSlide);
+  elements.nextButton.addEventListener("click", nextSlide);
+} // Использование обработчиков
+
+document.addEventListener("DOMContentLoaded", () => {
+  setupNavigationHandlers();
+  handleClick(elements.mainLink);
+});
