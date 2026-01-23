@@ -162,9 +162,9 @@ main {
   grid-template-columns: 1fr 1fr;
   gap: 2em;
   max-width: min(calc(100% - 2 * 30px), 1240px);
-  margin-top: calc(0.66 * 30px);
   margin-bottom: 40px;
   margin-inline: auto;
+  padding-top: calc(0.66 * 30px);
 }
 
 .block-column {
