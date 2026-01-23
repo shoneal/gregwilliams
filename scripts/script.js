@@ -155,8 +155,14 @@ function handleClick(target) {
 
     document.querySelector(".brand-name").textContent =
       "Greg Williams Photography";
-    document.querySelector(".introVideo source").src =
+    const video = document.querySelector(".introVideo");
+    video.querySelector("source[type='video/mp4']").src =
       `${basicLink}/video/intro.mp4`;
+    video.querySelector("source[type='video/webm']").src =
+      `${basicLink}/video/intro.webm`;
+    video.play().catch((e) => {
+      console.warn("Autoplay failed:", e);
+    });
 
     populateBlockColumns(photography, elements.photographyLink.textContent);
   } else {

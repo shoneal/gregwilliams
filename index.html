@@ -72,8 +72,16 @@
     <template id="intro-template">
       <div class="intro">
         <h1 class="brand-name"></h1>
-        <video class="introVideo" autoplay playsinline muted loop>
+        <video
+          class="introVideo"
+          autoplay
+          playsinline
+          muted
+          loop
+          preload="metadata"
+        >
           <source src="" type="video/mp4" />
+          <source src="" type="video/webm" />
         </video>
       </div>
     </template>
