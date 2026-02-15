@@ -1,3 +1,5 @@
+import { photography, hollywoodAuthentic } from "./photos.js";
+
 const magazines = 7; // Количество обложек Hollywood Authentic
 const basicLink = "https://shoneal.github.io/gregwilliams/"; // Главная ссылка
 
