@@ -13,7 +13,7 @@ export const hollywoodAuthentic = {
   Cannes: 16,
   "Dakota Johnson": 21,
   "David Corenswet": 14,
-  Gongs: 86,
+  Gongs: 88,
   "Kate Winslet": 10,
   "Mikey Madison": 9,
   "Paul Mescal": 19,
@@ -21,5 +21,5 @@ export const hollywoodAuthentic = {
   "The Smashing Machine": 11,
   Wolfs: 10,
   "Zoe Saldana": 13,
-  Photography: 131,
+  Photography: 135,
 }; // С сайта hollywoodauthentic.com
