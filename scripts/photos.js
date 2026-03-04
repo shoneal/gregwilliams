@@ -1,4 +1,4 @@
-const photography = {
+export const photography = {
   "Ana De Armas - Blonde": 7,
   Boat: 26,
   Gongs: 100,
@@ -7,7 +7,7 @@ const photography = {
   Photography: 205,
 }; // С сайта gregwilliams.com
 
-const hollywoodAuthentic = {
+export const hollywoodAuthentic = {
   "Austin Butler": 19,
   "Awards Journey - Emma Stone": 22,
   Cannes: 16,
