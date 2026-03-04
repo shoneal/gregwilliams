@@ -1,4 +1,4 @@
-export const photography = {
+const photography = {
   "Ana De Armas - Blonde": 7,
   Boat: 26,
   Gongs: 100,
@@ -7,13 +7,16 @@ export const photography = {
   Photography: 205,
 }; // С сайта gregwilliams.com
 
-export const hollywoodAuthentic = {
+const hollywoodAuthentic = {
   "Austin Butler": 19,
   "Awards Journey - Emma Stone": 22,
   Cannes: 16,
+  "Crime 101": 8,
   "Dakota Johnson": 21,
   "David Corenswet": 14,
-  Gongs: 88,
+  "David Jonsson": 9,
+  Gongs: 95,
+  "Jay Kelly": 7,
   "Kate Winslet": 10,
   "Mikey Madison": 9,
   "Paul Mescal": 19,
